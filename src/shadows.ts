@@ -252,19 +252,21 @@ export class ShadowAccessory {
 				ss = [new ShadowService(controlService, controlCharacteristics)];
 				break;
 			case "virtual_device":
-				let pushButtonServices: Array<ShadowService> = new Array();
-				let pushButtonService: ShadowService;
-				for (let r = 0; r < device.properties.rows.length; r++) {
-					if (device.properties.rows[r].type == "button") {
-						for (let e = 0; e < device.properties.rows[r].elements.length; e++) {
-							pushButtonService = new ShadowService(new hapService.Switch(device.properties.rows[r].elements[e].caption), [hapCharacteristic.On]);
-							pushButtonService.controlService.subtype = device.id + "-" + device.properties.rows[r].elements[e].id;
-							pushButtonServices.push(pushButtonService);
+				if (platform.config.includingVD) {
+					let pushButtonServices: Array<ShadowService> = new Array();
+					let pushButtonService: ShadowService;
+					for (let r = 0; r < device.properties.rows.length; r++) {
+						if (device.properties.rows[r].type == "button") {
+							for (let e = 0; e < device.properties.rows[r].elements.length; e++) {
+								pushButtonService = new ShadowService(new hapService.Switch(device.properties.rows[r].elements[e].caption), [hapCharacteristic.On]);
+								pushButtonService.controlService.subtype = device.id + "-" + device.properties.rows[r].elements[e].id;
+								pushButtonServices.push(pushButtonService);
+							}
 						}
 					}
+					if (pushButtonServices.length > 0)
+						ss = pushButtonServices;
 				}
-				if (pushButtonServices.length > 0)
-					ss = pushButtonServices;
 				break;
 			case "com.fibaro.FGRGBW441M":
 			case "com.fibaro.colorController":
