@@ -1,9 +1,4 @@
 # homebridge-Fibaro-HC2
-[![npm version](https://badge.fury.io/js/homebridge-fibaro-hc2.svg)](https://badge.fury.io/js/homebridge-fibaro-hc2)
-[![Downloads](https://img.shields.io/npm/dt/homebridge-fibaro-hc2)](https://www.npmjs.com/package/homebridge-fibaro-hc2)
-[![Homebridge Discord](https://img.shields.io/discord/432663330281226270?color=728ED5&logo=discord&label=discord)](https://discord.gg/38Dpux)
-
-<a href="https://www.buymeacoffee.com/ilcato" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
 
 Homebridge plugin for Fibaro Home Center 2
 
@@ -11,7 +6,7 @@ Homebridge plugin for Fibaro Home Center 2
 Follow the instruction in [homebridge](https://www.npmjs.com/package/homebridge) for the homebridge server installation.
 The plugin is published through [NPM](https://www.npmjs.com/package/homebridge-fibaro-hc2) and should be installed "globally" by typing:
 
-    npm install -g homebridge-fibaro-hc2
+    npm install --save https://github.com/Oxystin/homebridge-Fibaro-HC2.git
     
 # Configuration
 Remember to configure the plugin in config.json in your home directory inside the .homebridge directory. Configuration parameters:
@@ -26,8 +21,9 @@ Remember to configure the plugin in config.json in your home directory inside th
 + "doorlocktimeout": "PUT 0 FOR DISABLING THE CHECK. PUT A POSITIVE INTEGER N NUMBER ENABLE IT AFTER N SECONDS. DEFAULT 0"
 + "IFTTTmakerkey": "PUT KEY OF YOUR MAKER CHANNEL HERE (USED TO SIGNAL EVENTS TO THE OUTSIDE)"
 + "enableIFTTTnotification": "PUT all FOR ENABLING NOTIFICATIONS OF ALL KIND OF EVENTS, hc FOR CHANGE EVENTS COMING FROM HOME CENTER, hk FOR CHANGE EVENTS COMING FROM HOMEKIT, none FOR DISABLING NOTIFICATIONS; DEFAULT IS none"
++ "includingVD": True/False. ADD VIRTUAL DEVICES? DEFAULT True.
 
-Look for a sample config in [config.json example](https://github.com/ilcato/homebridge-Fibaro-HC2/blob/master/config.json)
+Look for a sample config in [config.json example](./blob/master/config.json)
 
 
 # Release notes
