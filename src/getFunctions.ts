@@ -61,10 +61,10 @@ export class GetFunctions {
 			[(new hapCharacteristic.ObstructionDetected()).UUID, { "function": this.getObstructionDetected, "delay": 0 }],
 			[(new hapCharacteristic.BatteryLevel()).UUID, { "function": this.getBatteryLevel, "delay": 0 }],
 			[(new hapCharacteristic.ChargingState()).UUID, { "function": this.getChargingState, "delay": 0 }],
-            [(new hapCharacteristic.StatusLowBattery()).UUID, { "function": this.getStatusLowBattery, "delay": 0 }],
-            [(new hapCharacteristic.CarbonDioxideDetected()).UUID, { "function": this.getCarbonDioxideDetected, "delay": 0 }],
-            [(new hapCharacteristic.CarbonDioxideLevel()).UUID, { "function": this.getFloat, "delay": 0 }],
-            [(new hapCharacteristic.AirQuality()).UUID, { "function": this.getAirQuality, "delay": 0 }]
+			[(new hapCharacteristic.StatusLowBattery()).UUID, { "function": this.getStatusLowBattery, "delay": 0 }],
+			[(new hapCharacteristic.CarbonDioxideDetected()).UUID, { "function": this.getCarbonDioxideDetected, "delay": 0 }],
+			[(new hapCharacteristic.CarbonDioxideLevel()).UUID, { "function": this.getFloat, "delay": 0 }],
+			[(new hapCharacteristic.AirQuality()).UUID, { "function": this.getAirQuality, "delay": 0 }]
 		]);
 		this.getCurrentSecuritySystemStateMapping = new Map([
 			["AwayArmed", this.hapCharacteristic.SecuritySystemCurrentState.AWAY_ARM],
@@ -172,23 +172,23 @@ export class GetFunctions {
 		this.returnValue(properties.value == "true" ? this.hapCharacteristic.SmokeDetected.SMOKE_DETECTED : this.hapCharacteristic.SmokeDetected.SMOKE_NOT_DETECTED, callback, characteristic);
 	}
 
-    getCarbonDioxideDetected(callback, characteristic, service, IDs, properties) {
-        let level = parseInt(properties.value);
-        this.returnValue(level  > 1000 ? this.hapCharacteristic.CarbonDioxideDetected.CO2_LEVELS_ABNORMAL : this.hapCharacteristic.CarbonDioxideDetected.CO2_LEVELS_NORMAL, callback, characteristic);
-    }
+	getCarbonDioxideDetected(callback, characteristic, service, IDs, properties) {
+		let level = parseInt(properties.value);
+		this.returnValue(level  > 1000 ? this.hapCharacteristic.CarbonDioxideDetected.CO2_LEVELS_ABNORMAL : this.hapCharacteristic.CarbonDioxideDetected.CO2_LEVELS_NORMAL, callback, characteristic);
+	}
 
-    getAirQuality(callback, characteristic, service, IDs, properties) {
-        let level = parseInt(properties.value);
-        var quality = this.hapCharacteristic.AirQuality.UNKNOWN;
+	getAirQuality(callback, characteristic, service, IDs, properties) {
+		let level = parseInt(properties.value);
+		var quality = this.hapCharacteristic.AirQuality.UNKNOWN;
 
-        if (level > 2000) quality = this.hapCharacteristic.AirQuality.POOR;
-        else if (level > 1500) quality = this.hapCharacteristic.AirQuality.INFERIOR;
-        else if (level > 1000) quality = this.hapCharacteristic.AirQuality.FAIR;
-        else if (level > 500) quality = this.hapCharacteristic.AirQuality.GOOD;
-        else if (level > 0) quality = this.hapCharacteristic.AirQuality.EXCELLENT;
+		if (level > 2000) quality = this.hapCharacteristic.AirQuality.POOR;
+		else if (level > 1500) quality = this.hapCharacteristic.AirQuality.INFERIOR;
+		else if (level > 1000) quality = this.hapCharacteristic.AirQuality.FAIR;
+		else if (level > 500) quality = this.hapCharacteristic.AirQuality.GOOD;
+		else if (level > 0) quality = this.hapCharacteristic.AirQuality.EXCELLENT;
 
-        this.returnValue(quality, callback, characteristic);
-    }
+		this.returnValue(quality, callback, characteristic);
+	}
 
 	getCarbonMonoxideDetected(callback, characteristic, service, IDs, properties) {
 		this.returnValue(properties.value == "true" ? this.hapCharacteristic.CarbonMonoxideDetected.CO_LEVELS_ABNORMAL : this.hapCharacteristic.CarbonMonoxideDetected.CO_LEVELS_NORMAL, callback, characteristic);
