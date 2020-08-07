@@ -284,6 +284,14 @@ export class ShadowAccessory {
 				controlService.subtype = device.id + "----" + "HP"; 					// HP: Harmony Plugin		
 				ss = [new ShadowService(controlService, [hapCharacteristic.On])];
 				break;
+			case "com.fibaro.multilevelSensor":
+				switch (device.properties.userDescription) {
+					case "CarbonDioxideSensor":
+						ss = [new ShadowService(new hapService.CarbonDioxideSensor("CO² Sensor: " + device.name), [hapCharacteristic.CarbonDioxideLevel, hapCharacteristic.CarbonDioxideDetected])];
+						ss.push(new ShadowService(new hapService.AirQualitySensor("AirQuality: " + device.name), [hapCharacteristic.AirQuality]));
+					break;
+				} 
+				break;
 			default:
 				break
 		}
