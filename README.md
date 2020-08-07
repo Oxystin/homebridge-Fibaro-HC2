@@ -23,7 +23,7 @@ Remember to configure the plugin in config.json in your home directory inside th
 + "enableIFTTTnotification": "PUT all FOR ENABLING NOTIFICATIONS OF ALL KIND OF EVENTS, hc FOR CHANGE EVENTS COMING FROM HOME CENTER, hk FOR CHANGE EVENTS COMING FROM HOMEKIT, none FOR DISABLING NOTIFICATIONS; DEFAULT IS none"
 + "includingVD": True/False. ADD VIRTUAL DEVICES? DEFAULT True.
 
-Look for a sample config in [config.json example](./blob/master/config.json)
+Look for a sample config in [config.json example](./config.json)
 
 
 # Release notes
