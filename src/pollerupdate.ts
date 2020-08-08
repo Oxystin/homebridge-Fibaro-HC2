@@ -60,7 +60,7 @@ export class Poller {
 				}
 				if (updates.events != undefined) {
 					updates.events.map((s) => {
-						if (s.data.property == "mode") {
+						if (["mode", "operatingMode"].indexOf(s.data.property) >= 0) {
 							this.manageOperatingMode(s);
 						}
 					});
@@ -146,7 +146,8 @@ export class Poller {
 	manageOperatingMode(event) {
 		for (let i = 0; i < this.platform.updateSubscriptions.length; i++) {
 			let subscription = this.platform.updateSubscriptions[i];
-			if (subscription.service.operatingModeId != undefined && subscription.service.operatingModeId == event.data.id && subscription.property == "mode") {
+			let triger_property = (["mode", "operatingMode"].indexOf(subscription.property) >= 0)
+			if (subscription.service.operatingModeId != undefined && subscription.service.operatingModeId == event.data.id && triger_property) {
 				this.platform.log("Updating value for device: ", `${subscription.service.operatingModeId}  parameter: ${subscription.characteristic.displayName}, value: ${event.data.newValue}`);
 				let getFunction = this.platform.getFunctions.getFunctionsMapping.get(subscription.characteristic.UUID);
 				if (getFunction.function)

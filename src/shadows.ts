@@ -102,6 +102,16 @@ export class ShadowAccessory {
 					if (characteristic.UUID == (new this.hapCharacteristic.CurrentTemperature()).UUID) {
 						characteristic.props.minValue = -50;
 					}
+					if (characteristic.UUID == this.hapCharacteristic.TargetHeatingCoolingState.UUID) {
+						if (service.controlService.TargetHeatingCoolingStateProps) {
+							characteristic.setProps(service.controlService.TargetHeatingCoolingStateProps);
+						}
+					}
+					if (characteristic.UUID == this.hapCharacteristic.TargetTemperature.UUID) {
+						if (service.controlService.TargetTemperatureProps) {
+							characteristic.setProps(service.controlService.TargetTemperatureProps);
+						}
+					}
 					platform.bindCharacteristicEvents(characteristic, service.controlService);
 				}
 			}
@@ -234,7 +244,7 @@ export class ShadowAccessory {
 				controlService = new hapService.Thermostat(device.name);
 				controlCharacteristics = [hapCharacteristic.CurrentTemperature, hapCharacteristic.TargetTemperature, hapCharacteristic.CurrentHeatingCoolingState, hapCharacteristic.TargetHeatingCoolingState, hapCharacteristic.TemperatureDisplayUnits];
 				// Check the presence of an associated operating mode device
-				let m = siblings.get("com.fibaro.operatingMode");
+				let m = device.properties.operatingMode ? device : siblings.get("com.fibaro.operatingMode");
 				if (m) {
 					controlService.operatingModeId = m.id;
 					controlService.subtype = device.id + "---" + m.id;
@@ -250,6 +260,21 @@ export class ShadowAccessory {
 					}
 				}
 				ss = [new ShadowService(controlService, controlCharacteristics)];
+
+				// Fibaro Heat Controller: we leave only the necessary modes - On/Heat
+				if (device.type == "com.fibaro.FGT001") {
+					controlService.TargetHeatingCoolingStateProps = {
+						minValue: 0,
+						maxValue: 1,
+						validValues: [0,1]
+					}
+					controlService.TargetTemperatureProps = {
+						minValue: Number(device.properties.targetLevelMin) || 10,
+						maxValue: Number(device.properties.targetLevelMax) || 30,
+						minStep: parseFloat(device.properties.targetLevelStep) || 0.5
+					}
+				}
+
 				break;
 			case "virtual_device":
 				if (platform.config.includingVD) {

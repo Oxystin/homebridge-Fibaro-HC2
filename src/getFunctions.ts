@@ -207,7 +207,7 @@ export class GetFunctions {
 		if (service.operatingModeId) {	// Operating mode is availble on Home Center
 			this.platform.fibaroClient.getDeviceProperties(service.operatingModeId)
 				.then((properties) => {
-					switch (properties.mode) {
+					switch (properties.operatingMode || properties.mode) {
 						case "0": // OFF
 							this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.OFF, callback, characteristic);
 							break;
@@ -241,7 +241,7 @@ export class GetFunctions {
 		if (service.operatingModeId) {	// Operating mode is availble on Home Center
 			this.platform.fibaroClient.getDeviceProperties(service.operatingModeId)
 				.then((properties) => {
-					switch (properties.mode) {
+					switch (properties.operatingMode || properties.mode) {
 						case "0": // OFF
 							this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.OFF, callback, characteristic);
 							break;
