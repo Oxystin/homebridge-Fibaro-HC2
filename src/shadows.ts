@@ -66,7 +66,7 @@ export class ShadowAccessory {
 		this.accessory.getService(this.hapService.AccessoryInformation)
 			.setCharacteristic(this.hapCharacteristic.Manufacturer, manufacturer)
 			.setCharacteristic(this.hapCharacteristic.Model, `${this.device.type || "HomeCenterBridgedAccessory"}`)
-			.setCharacteristic(this.hapCharacteristic.SerialNumber, `device_id_${this.device.id}`)
+			.setCharacteristic(this.hapCharacteristic.SerialNumber, `DeviceID: ${this.device.id}, RoomID: ${this.device.roomID}`)
 			.setCharacteristic(this.hapCharacteristic.FirmwareRevision, properties.zwaveVersion);
 	}
 	removeNoMoreExistingServices() {
