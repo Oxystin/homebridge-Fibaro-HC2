@@ -62,11 +62,11 @@ export class ShadowAccessory {
 
 	initAccessory() {
 		const properties = this.device.properties || {};
-		const manufacturer = (properties.zwaveCompany || "IlCato").replace("Fibargroup", "Fibar Group");
+		const manufacturer = (properties.zwaveCompany || "Fibaro").replace("Fibargroup", "Fibaro");
 		this.accessory.getService(this.hapService.AccessoryInformation)
 			.setCharacteristic(this.hapCharacteristic.Manufacturer, manufacturer)
 			.setCharacteristic(this.hapCharacteristic.Model, `${this.device.type || "HomeCenterBridgedAccessory"}`)
-			.setCharacteristic(this.hapCharacteristic.SerialNumber, `${properties.serialNumber || "<unknown>"}`)
+			.setCharacteristic(this.hapCharacteristic.SerialNumber, `device_id_${this.device.id}`)
 			.setCharacteristic(this.hapCharacteristic.FirmwareRevision, properties.zwaveVersion);
 	}
 	removeNoMoreExistingServices() {
