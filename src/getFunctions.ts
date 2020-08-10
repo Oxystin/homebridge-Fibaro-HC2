@@ -217,6 +217,9 @@ export class GetFunctions {
 						case "2": // COOL
 							this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.COOL, callback, characteristic);
 							break;
+						case "31": // Fibaro Heat Controller MAX mode
+							this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.HEAT, callback, characteristic);
+							break;
 						default:
 							break;
 					}
@@ -253,6 +256,9 @@ export class GetFunctions {
 							break;
 						case "10": // AUTO
 							this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.AUTO, callback, characteristic);
+							break;
+						case "31": // Fibaro Heat Controller MAX mode
+							this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.OFF, callback, characteristic);
 							break;
 						default:
 							break;
