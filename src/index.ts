@@ -87,6 +87,10 @@ class Config {
 	LockTargetStateDelay?: string;
 	FibaroTemperatureUnit?: string;
 	includingVD?: boolean;
+	ТhresholdAutoModeTemp?: number;
+	SetPointMinTemp?: number;
+	SetPointMaxTemp?: number;
+	SetPointStepTemp?: number;
 	constructor() {
 		this.name = "";
 		this.host = "";
@@ -149,13 +153,13 @@ class FibaroHC2 {
 		if (this.config.includingVD == undefined)
 			this.config.includingVD  = true;
 		if (this.config.ТhresholdAutoModeTemp == undefined)
-            this.config.ТhresholdAutoModeTemp = 24;
-        if (this.config.SetPointMinTemp == undefined)
-            this.config.SetPointMinTemp = 16;
-        if (this.config.SetPointMaxTemp == undefined)
-            this.config.SetPointMaxTemp = 30;
-        if (this.config.SetPointStepTemp == undefined)
-            this.config.SetPointStepTemp = 1;
+			this.config.ТhresholdAutoModeTemp = 24;
+		if (this.config.SetPointMinTemp == undefined)
+			this.config.SetPointMinTemp = 16;
+		if (this.config.SetPointMaxTemp == undefined)
+			this.config.SetPointMaxTemp = 30;
+		if (this.config.SetPointStepTemp == undefined)
+			this.config.SetPointStepTemp = 1;
 		this.fibaroClient = new FibaroClient(this.config.host, this.config.username, this.config.password);
 		if (pollerPeriod != 0)
 			this.poller = new Poller(this, pollerPeriod, Service, Characteristic);

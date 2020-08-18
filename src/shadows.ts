@@ -278,13 +278,13 @@ export class ShadowAccessory {
 					}
 				}
 
-                if (device.type == "com.fibaro.setPoint") {
-                    controlService.SetPointTemperatureProps = {
-                        minValue: platform.config.SetPointMinTemp,
-                        maxValue: platform.config.SetPointMaxTemp,
-                        minStep: platform.config.SetPointStepTemp
-                    };
-                }
+				if (device.type == "com.fibaro.setPoint") {
+					controlService.SetPointTemperatureProps = {
+						minValue: platform.config.SetPointMinTemp,
+						maxValue: platform.config.SetPointMaxTemp,
+						minStep: platform.config.SetPointStepTemp
+					};
+				}
 				break;
 			case "virtual_device":
 				if (platform.config.includingVD) {
