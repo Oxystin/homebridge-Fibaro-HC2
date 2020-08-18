@@ -22,6 +22,10 @@ Remember to configure the plugin in config.json in your home directory inside th
 + "IFTTTmakerkey": "PUT KEY OF YOUR MAKER CHANNEL HERE (USED TO SIGNAL EVENTS TO THE OUTSIDE)"
 + "enableIFTTTnotification": "PUT all FOR ENABLING NOTIFICATIONS OF ALL KIND OF EVENTS, hc FOR CHANGE EVENTS COMING FROM HOME CENTER, hk FOR CHANGE EVENTS COMING FROM HOMEKIT, none FOR DISABLING NOTIFICATIONS; DEFAULT IS none"
 + "includingVD": True/False. ADD VIRTUAL DEVICES? DEFAULT True.
++ "ТhresholdAutoModeTemp": Temperature threshold above which the heating mode is set, otherwise cooling (valid only for AUTO mode and if there is no temperature sensor); DEFAULT 24
++ "SetPointMinTemp": Minimum temperature of your air conditioner / thermostat (only for devices with type com.fibaro.setPoint); DEFAULT 16
++ "SetPointMaxTemp": Maximum temperature of your air conditioner / thermostat (only for devices with type com.fibaro.setPoint); DEFAULT 30
++ "SetPointStepTemp": Minimum temperature setting step; DEFAULT 1
 
 Look for a sample config in [config.json example](./config.json)
 

@@ -107,11 +107,14 @@ export class ShadowAccessory {
 							characteristic.setProps(service.controlService.TargetHeatingCoolingStateProps);
 						}
 					}
-					if (characteristic.UUID == this.hapCharacteristic.TargetTemperature.UUID) {
-						if (service.controlService.TargetTemperatureProps) {
-							characteristic.setProps(service.controlService.TargetTemperatureProps);
-						}
-					}
+                    if (characteristic.UUID == this.hapCharacteristic.TargetTemperature.UUID) {
+                        if (service.controlService.TargetTemperatureProps) {
+                            characteristic.setProps(service.controlService.TargetTemperatureProps);
+                        }
+                        if (service.controlService.SetPointTemperatureProps) {
+                            characteristic.setProps(service.controlService.SetPointTemperatureProps);
+                        }
+                    }
 					platform.bindCharacteristicEvents(characteristic, service.controlService);
 				}
 			}
@@ -275,6 +278,13 @@ export class ShadowAccessory {
 					}
 				}
 
+                if (device.type == "com.fibaro.setPoint") {
+                    controlService.SetPointTemperatureProps = {
+                        minValue: platform.config.SetPointMinTemp,
+                        maxValue: platform.config.SetPointMaxTemp,
+                        minStep: platform.config.SetPointStepTemp
+                    };
+                }
 				break;
 			case "virtual_device":
 				if (platform.config.includingVD) {

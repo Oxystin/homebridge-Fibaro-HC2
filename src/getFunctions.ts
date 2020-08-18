@@ -158,10 +158,26 @@ export class GetFunctions {
 		let angle = SetFunctions.scale(value2, 0, 100, characteristic.props.minValue, characteristic.props.maxValue);
 		this.returnValue(angle, callback, characteristic);
 	}
-
 	getTargetTemperature(callback, characteristic, service, IDs, properties) {
-		this.returnValue(parseFloat(properties.targetLevel), callback, characteristic);
-	}
+        let state = this.hapCharacteristic.TargetHeatingCoolingState;
+        let targetLevel = parseFloat(properties.targetLevel);
+        if (service.operatingModeId) {
+            this.platform.fibaroClient.getDeviceProperties(service.operatingModeId).then((properties) => {
+                let mode = properties.operatingMode || properties.mode;
+                if (mode && targetLevel) {
+                    switch (parseInt(mode)) {
+                        case state.HEAT:
+                            service.LastTargetHeatTemp = targetLevel;
+                            break;
+                        case state.COOL:
+                            service.LastTargetCoolTemp = targetLevel;
+                            break;
+                    }
+                }
+            });
+        }
+        this.returnValue(targetLevel, callback, characteristic);
+    }
 	getContactSensorState(callback, characteristic, service, IDs, properties) {
 		this.returnValue(properties.value == "false" ? this.hapCharacteristic.ContactSensorState.CONTACT_DETECTED : this.hapCharacteristic.ContactSensorState.CONTACT_NOT_DETECTED, callback, characteristic);
 	}
@@ -203,83 +219,102 @@ export class GetFunctions {
 		}
 		this.returnValue(properties.value == "true" ? this.hapCharacteristic.LockCurrentState.SECURED : this.hapCharacteristic.LockCurrentState.UNSECURED, callback, characteristic);
 	}
-	getCurrentHeatingCoolingState(callback, characteristic, service, IDs, properties) {
-		if (service.operatingModeId) {	// Operating mode is availble on Home Center
-			this.platform.fibaroClient.getDeviceProperties(service.operatingModeId)
-				.then((properties) => {
-					switch (properties.operatingMode || properties.mode) {
-						case "0": // OFF
-							this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.OFF, callback, characteristic);
-							break;
-						case "1": // HEAT
-							this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.HEAT, callback, characteristic);
-							break;
-						case "2": // COOL
-							this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.COOL, callback, characteristic);
-							break;
-						case "31": // Fibaro Heat Controller MAX mode
-							this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.HEAT, callback, characteristic);
-							break;
-						default:
-							break;
-					}
-				})
-				.catch((err) => {
-					this.platform.log("There was a problem getting value from: ", `${service.operatingModeId} - Err: ${err}`);
-					callback(err, null);
-				});
-		} else {
-			if (this.platform.config.enablecoolingstatemanagemnt == "on") { // Simulated operating mode
-				let t = parseFloat(properties.value);
-				if (t <= lowestTemp)
-					this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.OFF, callback, characteristic);
-				else
-					this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.HEAT, callback, characteristic);
-			} else { // Fake simulated mode: always heat
-				this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.HEAT, callback, characteristic);
-			}
-		}
-	}
-	getTargetHeatingCoolingState(callback, characteristic, service, IDs, properties) {
-		if (service.operatingModeId) {	// Operating mode is availble on Home Center
-			this.platform.fibaroClient.getDeviceProperties(service.operatingModeId)
-				.then((properties) => {
-					switch (properties.operatingMode || properties.mode) {
-						case "0": // OFF
-							this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.OFF, callback, characteristic);
-							break;
-						case "1": // HEAT
-							this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.HEAT, callback, characteristic);
-							break;
-						case "2": // COOL
-							this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.COOL, callback, characteristic);
-							break;
-						case "10": // AUTO
-							this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.AUTO, callback, characteristic);
-							break;
-						case "31": // Fibaro Heat Controller MAX mode
-							this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.OFF, callback, characteristic);
-							break;
-						default:
-							break;
-					}
-				})
-				.catch((err) => {
-					this.platform.log("There was a problem getting value from: ", `${service.operatingModeId} - Err: ${err}`);
-					callback(err, null);
-				});
-		} else {
-			if (this.platform.config.enablecoolingstatemanagemnt == "on") {
-				let t = parseFloat(properties.targetLevel);
-				if (t <= lowestTemp)
-					this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.OFF, callback, characteristic);
-				else
-					this.returnValue(this.hapCharacteristic.TargetHeatingCoolingState.HEAT, callback, characteristic);
-			} else {
-				this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.HEAT, callback, characteristic);
-			}
-		}
-	}
+    getCurrentHeatingCoolingState(callback, characteristic, service, IDs, properties) {
+        let state = this.hapCharacteristic.CurrentHeatingCoolingState;
+        if (service.operatingModeId) { // Operating mode is availble on Home Center
+            this.platform.fibaroClient.getDeviceProperties(service.operatingModeId)
+                .then((properties) => {
+                switch (properties.operatingMode || properties.mode) {
+                    case "0": // OFF
+                        this.returnValue(state.OFF, callback, characteristic);
+                        break;
+                    case "1": // HEAT
+                        this.returnValue(state.HEAT, callback, characteristic);
+                        break;
+                    case "2": // COOL
+                        this.returnValue(state.COOL, callback, characteristic);
+                        break;
+                    case "3": // AUTO
+                        let IDs = service.subtype.split("-");
+                        this.platform.fibaroClient.getDeviceProperties(IDs[0]).then((properties) => {
+                            if (properties.mode > 0 && properties.mode < 3){
+                                this.returnValue(properties.mode, callback, characteristic);
+                            } else {
+                                this.returnValue(state.OFF, callback, characteristic);
+                            }
+                        });
+                        break;
+                    case "31": // Fibaro Heat Controller MAX mode
+                        this.returnValue(state.HEAT, callback, characteristic);
+                        break;
+                    default:
+                        break;
+                }
+            })
+                .catch((err) => {
+                this.platform.log("There was a problem getting value from: ", `${service.operatingModeId} - Err: ${err}`);
+                callback(err, null);
+            });
+        }
+        else {
+            if (this.platform.config.enablecoolingstatemanagemnt == "on") { // Simulated operating mode
+                let t = parseFloat(properties.value);
+                if (t <= setFunctions_1.lowestTemp)
+                    this.returnValue(state.OFF, callback, characteristic);
+                else
+                    this.returnValue(state.HEAT, callback, characteristic);
+            }
+            else { // Fake simulated mode: always heat
+                this.returnValue(state.HEAT, callback, characteristic);
+            }
+        }
+    }
+    getTargetHeatingCoolingState(callback, characteristic, service, IDs, properties) {
+        let state = this.hapCharacteristic.TargetHeatingCoolingState;
+        if (service.operatingModeId) { // Operating mode is availble on Home Center
+            this.platform.fibaroClient.getDeviceProperties(service.operatingModeId)
+                .then((properties) => {
+                switch (properties.operatingMode || properties.mode) {
+                    case "0": // OFF
+                        this.returnValue(state.OFF, callback, characteristic);
+                        break;
+                    case "1": // HEAT
+                        this.returnValue(state.HEAT, callback, characteristic);
+                        break;
+                    case "2": // COOL
+                        this.returnValue(state.COOL, callback, characteristic);
+                        break;
+                    case "10": // AUTO
+                        this.returnValue(state.AUTO, callback, characteristic);
+                        break;
+                    case "3": // AUTO
+                        this.returnValue(state.AUTO, callback, characteristic);
+                        break;
+                    case "31": // Fibaro Heat Controller MAX mode
+                        this.returnValue(state.OFF, callback, characteristic);
+                        break;
+                    default:
+                        break;
+                }
+            })
+                .catch((err) => {
+                this.platform.log("There was a problem getting value from: ", `${service.operatingModeId} - Err: ${err}`);
+                callback(err, null);
+            });
+        }
+        else {
+            if (this.platform.config.enablecoolingstatemanagemnt == "on") {
+                let t = parseFloat(properties.targetLevel);
+                if (t <= setFunctions_1.lowestTemp)
+                    this.returnValue(state.OFF, callback, characteristic);
+                else
+                    this.returnValue(state.HEAT, callback, characteristic);
+            }
+            else {
+                this.returnValue(this.hapCharacteristic.CurrentHeatingCoolingState.HEAT, callback, characteristic);
+            }
+        }
+    }
 	getTemperatureDisplayUnits(callback, characteristic, service, IDs, properties) {
 		this.returnValue(this.hapCharacteristic.TemperatureDisplayUnits.CELSIUS, callback, characteristic);
 	}
