@@ -107,14 +107,14 @@ export class ShadowAccessory {
 							characteristic.setProps(service.controlService.TargetHeatingCoolingStateProps);
 						}
 					}
-                    if (characteristic.UUID == this.hapCharacteristic.TargetTemperature.UUID) {
-                        if (service.controlService.TargetTemperatureProps) {
-                            characteristic.setProps(service.controlService.TargetTemperatureProps);
-                        }
-                        if (service.controlService.SetPointTemperatureProps) {
-                            characteristic.setProps(service.controlService.SetPointTemperatureProps);
-                        }
-                    }
+					if (characteristic.UUID == this.hapCharacteristic.TargetTemperature.UUID) {
+						if (service.controlService.TargetTemperatureProps) {
+							characteristic.setProps(service.controlService.TargetTemperatureProps);
+						}
+						if (service.controlService.SetPointTemperatureProps) {
+							characteristic.setProps(service.controlService.SetPointTemperatureProps);
+						}
+					}
 					platform.bindCharacteristicEvents(characteristic, service.controlService);
 				}
 			}
@@ -252,16 +252,29 @@ export class ShadowAccessory {
 					controlService.operatingModeId = m.id;
 					controlService.subtype = device.id + "---" + m.id;
 				}
-				// Check if there's a temperature Sensor and use it instead of the provided float value
-				let t = siblings.get("com.fibaro.temperatureSensor");
-				if (t) {
-					controlService.floatServiceId = t.id;
-					if (controlService.subtype) {
-						controlService.subtype = controlService.subtype + "-" + t.id;
-					} else {
-						controlService.subtype = device.id + "----" + t.id;
-					}
-				}
+                let t;
+                if (platform.config.defaultTemperatureRoomID) {
+                    t = platform.config.defaultTemperatureRoomID.find(sensor => sensor.roomID == device.roomID);
+                    if (t) {
+                        controlService.floatServiceId = t.tempID;
+                        if (controlService.subtype) {
+                            controlService.subtype = controlService.subtype + "-" + t.tempID;
+                    } else {
+                        controlService.subtype = device.id + "----" + t.tempID;
+                        }
+                    }
+                } else {
+					// Check if there's a temperature Sensor and use it instead of the provided float value
+                    t = siblings.get("com.fibaro.temperatureSensor");
+                    if (t) {
+                        controlService.floatServiceId = t.id;
+                        if (controlService.subtype) {
+                            controlService.subtype = controlService.subtype + "-" + t.id;
+                        } else {
+                            controlService.subtype = device.id + "----" + t.id;
+                        }
+                    }
+                }			
 				ss = [new ShadowService(controlService, controlCharacteristics)];
 
 				// Fibaro Heat Controller: we leave only the necessary modes - On/Heat
