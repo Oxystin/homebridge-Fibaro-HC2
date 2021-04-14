@@ -266,7 +266,7 @@ export class ShadowAccessory {
 					controlService.TargetHeatingCoolingStateProps = {
 						minValue: 0,
 						maxValue: 1,
-						validValues: [0,1]
+						validValues: [0, 1]
 					}
 					controlService.TargetTemperatureProps = {
 						minValue: Number(device.properties.targetLevelMin) || 10,
@@ -277,21 +277,19 @@ export class ShadowAccessory {
 
 				break;
 			case "virtual_device":
-				if (platform.config.includingVD) {
-					let pushButtonServices: Array<ShadowService> = new Array();
-					let pushButtonService: ShadowService;
-					for (let r = 0; r < device.properties.rows.length; r++) {
-						if (device.properties.rows[r].type == "button") {
-							for (let e = 0; e < device.properties.rows[r].elements.length; e++) {
-								pushButtonService = new ShadowService(new hapService.Switch(device.properties.rows[r].elements[e].caption), [hapCharacteristic.On]);
-								pushButtonService.controlService.subtype = device.id + "-" + device.properties.rows[r].elements[e].id;
-								pushButtonServices.push(pushButtonService);
-							}
+				let pushButtonServices: Array<ShadowService> = new Array();
+				let pushButtonService: ShadowService;
+				for (let r = 0; r < device.properties.rows.length; r++) {
+					if (device.properties.rows[r].type == "button") {
+						for (let e = 0; e < device.properties.rows[r].elements.length; e++) {
+							pushButtonService = new ShadowService(new hapService.Switch(device.properties.rows[r].elements[e].caption), [hapCharacteristic.On]);
+							pushButtonService.controlService.subtype = device.id + "-" + device.properties.rows[r].elements[e].id;
+							pushButtonServices.push(pushButtonService);
 						}
 					}
-					if (pushButtonServices.length > 0)
-						ss = pushButtonServices;
 				}
+				if (pushButtonServices.length > 0)
+					ss = pushButtonServices;
 				break;
 			case "com.fibaro.FGRGBW441M":
 			case "com.fibaro.colorController":
@@ -314,8 +312,8 @@ export class ShadowAccessory {
 					case "CarbonDioxideSensor":
 						ss = [new ShadowService(new hapService.CarbonDioxideSensor("CO² Sensor: " + device.name), [hapCharacteristic.CarbonDioxideLevel, hapCharacteristic.CarbonDioxideDetected])];
 						ss.push(new ShadowService(new hapService.AirQualitySensor("AirQuality: " + device.name), [hapCharacteristic.AirQuality]));
-					break;
-				} 
+						break;
+				}
 				break;
 			default:
 				break
