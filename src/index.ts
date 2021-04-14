@@ -205,10 +205,11 @@ class FibaroHC2 {
 	LoadAccessories(devices) {
 		this.log('Loading accessories', '');
 		devices.map((s, i, a) => {
-			if (this.config.includingVD && s.visible == true && s.name.charAt(0) != "_") {
-				let siblings = this.findSiblingDevices(s, a);
-				this.addAccessory(ShadowAccessory.createShadowAccessory(s, siblings, Accessory, Service, Characteristic, this));
-			}
+			let virtual_device_include = this.config.includingVD ? true : s.type != "virtual_device";
+			if (virtual_device_include && s.visible && s.name.charAt(0) != "_") {
+					let siblings = this.findSiblingDevices(s, a);
+					this.addAccessory(ShadowAccessory.createShadowAccessory(s, siblings, Accessory, Service, Characteristic, this));
+			}				
 		});
 
 		// Create Thermostats based on heating and AC zones
