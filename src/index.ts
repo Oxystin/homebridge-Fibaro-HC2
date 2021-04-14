@@ -147,7 +147,7 @@ class FibaroHC2 {
 		if (this.config.FibaroTemperatureUnit == undefined)
 			this.config.FibaroTemperatureUnit = "C";
 		if (this.config.includingVD == undefined)
-			this.config.includingVD  = true;
+			this.config.includingVD  = false;
 		this.fibaroClient = new FibaroClient(this.config.host, this.config.username, this.config.password);
 		if (pollerPeriod != 0)
 			this.poller = new Poller(this, pollerPeriod, Service, Characteristic);
