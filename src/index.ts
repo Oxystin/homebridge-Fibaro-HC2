@@ -87,6 +87,7 @@ class Config {
 	LockTargetStateDelay?: string;
 	FibaroTemperatureUnit?: string;
 	includingVD?: boolean;
+	excludeDeviceID?: any;
 	constructor() {
 		this.name = "";
 		this.host = "";
@@ -148,6 +149,8 @@ class FibaroHC2 {
 			this.config.FibaroTemperatureUnit = "C";
 		if (this.config.includingVD == undefined)
 			this.config.includingVD  = false;
+		if (this.config.excludeDeviceID == undefined)
+			this.config.excludeDeviceID  = [];
 		this.fibaroClient = new FibaroClient(this.config.host, this.config.username, this.config.password);
 		if (pollerPeriod != 0)
 			this.poller = new Poller(this, pollerPeriod, Service, Characteristic);
@@ -206,7 +209,8 @@ class FibaroHC2 {
 		this.log('Loading accessories', '');
 		devices.map((s, i, a) => {
 			let virtual_device_include = this.config.includingVD ? true : s.type != "virtual_device";
-			if (virtual_device_include && s.visible && s.name.charAt(0) != "_") {
+			let excludeDeviceID = this.config.excludeDeviceID.indexOf(s.id) > -1;
+			if (excludeDeviceID && virtual_device_include && s.visible && s.name.charAt(0) != "_") {
 					let siblings = this.findSiblingDevices(s, a);
 					this.addAccessory(ShadowAccessory.createShadowAccessory(s, siblings, Accessory, Service, Characteristic, this));
 			}				
